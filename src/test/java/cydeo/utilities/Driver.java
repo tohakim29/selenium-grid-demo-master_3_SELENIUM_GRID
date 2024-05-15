@@ -26,7 +26,10 @@ public class Driver {
 
     // Thread-local variable to hold WebDriver instances
     private static InheritableThreadLocal<WebDriver> driverPool = new InheritableThreadLocal<>();
-    private static String gridAddress;
+
+
+
+    public static   String gridAddress;
     private static URL url;
     private static DesiredCapabilities desiredCapabilities;
 
@@ -40,62 +43,78 @@ public class Driver {
      * @return The WebDriver instance.
      */
     public static WebDriver getDriver() {
-        String browserType ="";
+
+        if (driverPool.get() == null) {
+            String browserType = "";
 
 
+            if (System.getProperty("BROWSER") != null) {
+                //if System(command line) does have mvn test -DBROWSER //have sth
+                browserType = System.getProperty("BROWSER");
+            } else {
+                 browserType = ConfigurationReader.getProperty("browser");
+            }
+            System.out.println("browserType = " + browserType);
 
-        if (System.getProperty("BROWSER") == null) {
-             browserType = ConfigurationReader.getProperty("browser");
-        }else{
-            browserType = System.getProperty("BROWSER");
-        }
-        System.out.println("browserType = " + browserType);
 
-
-        // Initialize WebDriver based on browser type
+            // Initialize WebDriver based on browser type
             switch (browserType) {
-                case "chrome":
+
+///////////////////////////chrome////////////////////////////////////////
+                //run in a selenium -grid server
+                case "remote-chrome":
                     /**many machine GRID*/
-                    try{
-                       //Assign grid SERVER address ip,
+                    try {
+                        //Assign grid SERVER address ip,
                         gridAddress = "54.237.209.202";
-                        url = new URL("http://"+gridAddress + ":4444/wd/hub");
-                         desiredCapabilities = new DesiredCapabilities();
+                        url = new URL("http://" + gridAddress + ":4444/wd/hub");
+                        desiredCapabilities = new DesiredCapabilities();
                         desiredCapabilities.setBrowserName("chrome");
                         driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
-
-                    /**one machine*/
-                   // driverPool.set(new ChromeDriver());
-
                     break;
+
+                //run in local machine, without selenium-grid
+                case "chrome":
+                    /**one machine*/
+                    driverPool.set(new ChromeDriver());
+                    break;
+///////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////firefox////////////////////////////////////////
+                //run in a selenium -grid server
                 case "remote-firefox":
-                    try{
+                    try {
                         //Assign grid SERVER address ip
-                         gridAddress = "54.237.209.202";
-                         url = new URL("http://"+gridAddress + ":4444/wd/hub");
-                         desiredCapabilities = new DesiredCapabilities();
-                         desiredCapabilities.setBrowserName("firefox");
+                        gridAddress = "54.237.209.202";
+                        url = new URL("http://" + gridAddress + ":4444/wd/hub");
+                        desiredCapabilities = new DesiredCapabilities();
+                        desiredCapabilities.setBrowserName("firefox");
                         driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    /**one machine*/
-                    //driverPool.set(new FirefoxDriver());
                     break;
+
+
+                //run in local machine, without selenium-grid
+                case "firefox":
+                    /**one machine*/
+                    driverPool.set(new FirefoxDriver());
+                    break;
+///////////////////////////////////////////////////////////////////
+
+//////////////////////////edge/////////////////////////////////////////
                 case "edge":
-
-
-
-
                     /**one machine*/
-                    //driverPool.set(new EdgeDriver());
+                    driverPool.set(new EdgeDriver());
                     break;
+///////////////////////////////////////////////////////////////////
+
                 case "headless-chrome":
                     ChromeOptions options = new ChromeOptions();
                     options.addArguments("--headless=new");
@@ -105,13 +124,20 @@ public class Driver {
                     throw new IllegalArgumentException("Invalid browser type specified in the configuration: " + browserType);
             }
 
+
+
+
             // Maximize the browser window and set implicit wait
             driverPool.get().manage().window().maximize();
             driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
+        }
+            return driverPool.get();
+   }
 
-        return driverPool.get();
-    }
+
+
+
 
     /**
      * Closes the WebDriver instance and removes it from the thread-local variable.
@@ -123,4 +149,8 @@ public class Driver {
             driverPool.remove(); // Remove the WebDriver instance from the thread-local variable
         }
     }
+
+
+
+
 }
