@@ -29,7 +29,7 @@ public class Driver {
 
 
 
-    public static   String gridAddress;
+    public  static   String gridAddress;
     private static URL url;
     private static DesiredCapabilities desiredCapabilities;
 
@@ -43,7 +43,7 @@ public class Driver {
      * @return The WebDriver instance.
      */
     public static WebDriver getDriver() {
-
+//getDriver basiclly gives you a driver like chrome ex
         if (driverPool.get() == null) {
             String browserType = "";
 
@@ -66,7 +66,13 @@ public class Driver {
                     /**many machine GRID*/
                     try {
                         //Assign grid SERVER address ip,
-                        gridAddress = "54.237.209.202";
+                        /*for now working but if cydeo will turn off the ip, it will not work, and to check visually how it is running in browser
+                          http://54.196.44.18:4444/ui/
+                        * */
+                        //54.196.44.18 not working
+                        //54.162.50.13   //there are 2 nodes
+                        //54.237.209.202  //not working
+                        gridAddress = "54.162.50.13";
                         url = new URL("http://" + gridAddress + ":4444/wd/hub");
                         desiredCapabilities = new DesiredCapabilities();
                         desiredCapabilities.setBrowserName("chrome");
@@ -90,7 +96,7 @@ public class Driver {
                 case "remote-firefox":
                     try {
                         //Assign grid SERVER address ip
-                        gridAddress = "54.237.209.202";
+                        gridAddress = "54.162.50.13";
                         url = new URL("http://" + gridAddress + ":4444/wd/hub");
                         desiredCapabilities = new DesiredCapabilities();
                         desiredCapabilities.setBrowserName("firefox");

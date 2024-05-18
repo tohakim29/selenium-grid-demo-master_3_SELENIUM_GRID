@@ -44,6 +44,8 @@
 
     </dependencies>
 
+
+    <!--to run parallel , run from maven "mvn test" -->
     <build>
         <plugins>
             <plugin>
