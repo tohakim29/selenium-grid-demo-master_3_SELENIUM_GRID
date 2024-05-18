@@ -33,6 +33,8 @@ public class StepDefs {
 
         String actualSuccessMessage = practicePage.successMessage.getText();
         Assert.assertTrue(actualSuccessMessage.contains(expectedSuccessMessage));
+        Assert.assertEquals(expectedSuccessMessage,actualSuccessMessage );
+
     }
 
     @Then("I should see page title as {string}")
