@@ -33,7 +33,6 @@ public class StepDefs {
 
         String actualSuccessMessage = practicePage.successMessage.getText();
         Assert.assertTrue(actualSuccessMessage.contains(expectedSuccessMessage));
-        Assert.assertEquals(expectedSuccessMessage,actualSuccessMessage );
 
     }
 

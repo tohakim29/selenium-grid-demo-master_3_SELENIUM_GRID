@@ -1,6 +1,6 @@
 node {
     stage('Clone code') {
-        git 'https://github.com/mehmetCt/selenium-grid-demo'
+        git 'https://github.com/tohakim29/selenium-grid-demo-master_3_SELENIUM_GRID'
     }
 
     stage('Run tests'){
